@@ -7,7 +7,7 @@
             host: { value: '', required: true }
         },
         credentials: {
-            clientKey: { type: 'text' }
+            clientKey: { type: 'password' }
         },
         label: function() {
             return this.name || this.host || 'LG TV';
@@ -28,6 +28,41 @@
         <p><strong>First connection:</strong> Accept the pairing prompt on your TV.</p>
         <p>The TV must be on and "LG Connect Apps" must be enabled in TV settings.</p>
     </div>
+</script>
+
+<script type="text/html" data-help-name="lgtv-config">
+    <p>Configuration node for LG webOS TV connection.</p>
+
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>Name <span class="property-type">string</span></dt>
+        <dd>A friendly name for this TV (e.g., "Living Room TV").</dd>
+        <dt>TV IP <span class="property-type">string</span></dt>
+        <dd>The IP address of your LG TV on the local network.</dd>
+    </dl>
+
+    <h3>Finding your TV's IP Address</h3>
+    <ol>
+        <li>On your TV, go to <strong>Settings > Network > Wi-Fi Connection</strong></li>
+        <li>Select your connected network</li>
+        <li>The IP address will be displayed (e.g., 192.168.1.100)</li>
+    </ol>
+
+    <h3>Pairing Process</h3>
+    <p>When you first deploy a flow using this TV configuration:</p>
+    <ol>
+        <li>A pairing prompt will appear on your TV screen</li>
+        <li>Use your TV remote to select "Accept"</li>
+        <li>The pairing key is saved automatically</li>
+        <li>Future connections will happen automatically</li>
+    </ol>
+
+    <h3>Requirements</h3>
+    <ul>
+        <li>TV must be powered on (not in standby mode)</li>
+        <li>"LG Connect Apps" must be enabled: Settings > General > External Device Manager > LG Connect Apps</li>
+        <li>TV and Node-RED server must be on the same network</li>
+    </ul>
 </script>
 
 <!-- LG TV Notify Node -->
@@ -68,12 +103,12 @@
 </script>
 
 <script type="text/html" data-help-name="lgtv-notify">
-    <p>Send toast notifications to an LG webOS TV.</p>
+    <p>Send toast notifications to an LG webOS Smart TV.</p>
 
     <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>payload <span class="property-type">string</span></dt>
-        <dd>The notification message to display on the TV.</dd>
+        <dd>The notification message to display on the TV (max 60 characters recommended).</dd>
     </dl>
 
     <h3>Outputs</h3>
@@ -82,15 +117,43 @@
         <dd>The original message.</dd>
         <dt>toastId <span class="property-type">string</span></dt>
         <dd>The ID of the created toast notification.</dd>
+        <dt>tvResponse <span class="property-type">object</span></dt>
+        <dd>The full response from the TV API.</dd>
     </dl>
 
     <h3>Details</h3>
-    <p>This node sends a toast notification to an LG webOS Smart TV.</p>
-    <p>The notification will appear in the top-right corner of the TV screen for approximately 5 seconds.</p>
-    <p><strong>First use:</strong> When you first deploy, check your TV for a pairing prompt and accept it.</p>
+    <p>This node sends a toast notification to an LG webOS Smart TV. The notification appears in the top-right corner of the TV screen for approximately 5 seconds.</p>
+
+    <h4>First-time Setup</h4>
+    <ol>
+        <li>Configure the TV node with your TV's IP address</li>
+        <li>Deploy the flow</li>
+        <li><strong>Important:</strong> Accept the pairing prompt on your TV</li>
+        <li>The pairing key is saved automatically for future connections</li>
+    </ol>
+
+    <h4>Example Usage</h4>
+    <p>Send a simple notification:</p>
+    <pre>msg.payload = "Doorbell: Someone is at the door!";
+return msg;</pre>
+
+    <h4>Requirements</h4>
+    <ul>
+        <li>LG webOS Smart TV (webOS 3.0 or newer, including 2025 models)</li>
+        <li>TV and Node-RED must be on the same network</li>
+        <li>"LG Connect Apps" must be enabled on the TV (Settings > General > External Device Manager)</li>
+    </ul>
+
+    <h4>Troubleshooting</h4>
+    <ul>
+        <li><strong>TV not connecting:</strong> Ensure TV is powered on (not standby), wait ~25 seconds after power-on</li>
+        <li><strong>No pairing prompt:</strong> Restart Node-RED and redeploy</li>
+        <li><strong>Notifications not showing:</strong> TV must be on and displaying content</li>
+    </ul>
 
     <h3>References</h3>
     <ul>
-        <li><a href="https://github.com/rcaldeira/node-red-contrib-lgtv-notify">GitHub</a> - the node's repository</li>
+        <li><a href="https://github.com/Ricardo-Miguel-Caldeira/node-red-contrib-lgtv-notify">GitHub Repository</a></li>
+        <li><a href="https://www.npmjs.com/package/node-red-contrib-lgtv-notify">npm Package</a></li>
     </ul>
 </script>

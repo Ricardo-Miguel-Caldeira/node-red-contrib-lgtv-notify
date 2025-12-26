@@ -40,6 +40,7 @@ module.exports = function(RED) {
 
             node.connection.on('error', (err) => {
                 node.error(`Connection error: ${err.message}`);
+                node.warn(`Full error: ${JSON.stringify(err)}`);
                 node.connected = false;
                 node.connecting = false;
             });
@@ -56,7 +57,8 @@ module.exports = function(RED) {
             node.connection.on('connect', () => {
                 node.connected = true;
                 node.connecting = false;
-                node.log(`Connected to ${node.host}`);
+                node.log(`Connected to TV at ${node.host}`);
+                node.warn(`Connection established - clientKey: ${node.connection.clientKey ? 'present' : 'missing'}`);
 
                 // Save client key for future connections
                 if (node.connection.clientKey && node.connection.clientKey !== node.clientKey) {
@@ -82,16 +84,26 @@ module.exports = function(RED) {
         };
 
         this.sendToast = function(message, callback) {
+            node.warn(`sendToast called - connected: ${node.connected}, message: "${message}"`);
+
             if (!node.connected) {
+                node.warn(`Not connected, queuing message. Queue size: ${node.queue.length + 1}`);
                 node.queue.push({ message, callback });
                 node.connect();
                 return;
             }
 
+            node.warn(`Sending toast request to TV...`);
             node.connection.request(
                 'ssap://system.notifications/createToast',
                 { message: message },
                 (err, res) => {
+                    if (err) {
+                        node.error(`Toast request failed: ${err.message || err}`);
+                        node.warn(`Full error object: ${JSON.stringify(err)}`);
+                    } else {
+                        node.warn(`Toast response: ${JSON.stringify(res)}`);
+                    }
                     if (callback) callback(err, res);
                 }
             );
@@ -127,16 +139,21 @@ module.exports = function(RED) {
         this.on('input', function(msg, send, done) {
             const message = msg.payload || config.message || 'Notification';
 
+            node.warn(`Input received - payload type: ${typeof msg.payload}, message to send: "${message}"`);
             node.status({ fill: 'yellow', shape: 'dot', text: 'sending...' });
 
             node.tv.sendToast(message, (err, res) => {
+                node.warn(`Callback received - err: ${err ? JSON.stringify(err) : 'null'}, res: ${JSON.stringify(res)}`);
+
                 if (err) {
                     node.status({ fill: 'red', shape: 'dot', text: 'error' });
+                    node.error(`Failed to send toast: ${err.message || JSON.stringify(err)}`, msg);
                     if (done) done(err);
-                    else node.error(err, msg);
                 } else {
+                    node.warn(`Toast sent successfully - toastId: ${res ? res.toastId : 'unknown'}`);
                     node.status({ fill: 'green', shape: 'dot', text: 'sent' });
-                    msg.toastId = res.toastId;
+                    msg.toastId = res ? res.toastId : null;
+                    msg.tvResponse = res;
                     send(msg);
                     if (done) done();
 

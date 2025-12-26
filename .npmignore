@@ -1,5 +1,8 @@
 .git
 .gitignore
+.claude
+.github
 node_modules
 *.log
 .DS_Store
+CLAUDE.md

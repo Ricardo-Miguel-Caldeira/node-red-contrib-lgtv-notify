@@ -45,7 +45,7 @@ After accepting the pairing prompt once, the node will remember the connection k
 ### Basic Example
 
 ```
-[inject] → [lgtv-notify]
+[inject] → [lgtv-notify] → [debug]
 ```
 
 Set `msg.payload` to your notification message:
@@ -54,6 +54,20 @@ Set `msg.payload` to your notification message:
 msg.payload = "Someone is at the front door!";
 return msg;
 ```
+
+### Example Flow
+
+Import this flow into Node-RED (Menu → Import):
+
+```json
+[{"id":"a1b2c3d4","type":"inject","name":"Send Notification","props":[{"p":"payload"}],"payload":"Hello from Node-RED!","payloadType":"str","repeat":"","crontab":"","once":false,"x":160,"y":100,"wires":[["e5f6g7h8"]]},{"id":"e5f6g7h8","type":"lgtv-notify","name":"LG TV","tv":"","message":"","x":370,"y":100,"wires":[["i9j0k1l2"]]},{"id":"i9j0k1l2","type":"debug","name":"Response","active":true,"tosidebar":true,"complete":"true","x":540,"y":100,"wires":[]}]
+```
+
+1. Import the flow above
+2. Double-click the "LG TV" node and configure your TV's IP address
+3. Deploy
+4. Accept the pairing prompt on your TV
+5. Click the inject button to send a notification
 
 ### Home Automation Example
 

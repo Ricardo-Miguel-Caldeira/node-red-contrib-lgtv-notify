@@ -1,0 +1,76 @@
+[
+    {
+        "id": "lgtv-example-flow",
+        "type": "tab",
+        "label": "LG TV Notify Example",
+        "disabled": false,
+        "info": "Basic example showing how to send toast notifications to an LG webOS TV."
+    },
+    {
+        "id": "lgtv-inject-node",
+        "type": "inject",
+        "z": "lgtv-example-flow",
+        "name": "Send Notification",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "Hello from Node-RED!",
+        "payloadType": "str",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "lgtv-notify-node"
+            ]
+        ]
+    },
+    {
+        "id": "lgtv-notify-node",
+        "type": "lgtv-notify",
+        "z": "lgtv-example-flow",
+        "name": "LG TV",
+        "tv": "",
+        "message": "",
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "lgtv-debug-node"
+            ]
+        ]
+    },
+    {
+        "id": "lgtv-debug-node",
+        "type": "debug",
+        "z": "lgtv-example-flow",
+        "name": "Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "lgtv-comment-node",
+        "type": "comment",
+        "z": "lgtv-example-flow",
+        "name": "Instructions",
+        "info": "1. Double-click the 'LG TV' node\n2. Add a new TV configuration with your TV's IP address\n3. Deploy the flow\n4. Accept the pairing prompt on your TV\n5. Click the inject button to send a notification",
+        "x": 130,
+        "y": 40,
+        "wires": []
+    }
+]
