@@ -1,0 +1,96 @@
+<!-- LG TV Configuration Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-config', {
+        category: 'config',
+        defaults: {
+            name: { value: '' },
+            host: { value: '', required: true }
+        },
+        credentials: {
+            clientKey: { type: 'text' }
+        },
+        label: function() {
+            return this.name || this.host || 'LG TV';
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="lgtv-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Living Room TV">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-globe"></i> TV IP</label>
+        <input type="text" id="node-config-input-host" placeholder="192.168.1.100">
+    </div>
+    <div class="form-tips">
+        <p><strong>First connection:</strong> Accept the pairing prompt on your TV.</p>
+        <p>The TV must be on and "LG Connect Apps" must be enabled in TV settings.</p>
+    </div>
+</script>
+
+<!-- LG TV Notify Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('lgtv-notify', {
+        category: 'home automation',
+        color: '#A6BBCF',
+        defaults: {
+            name: { value: '' },
+            tv: { value: '', type: 'lgtv-config', required: true },
+            message: { value: '' }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'font-awesome/fa-television',
+        label: function() {
+            return this.name || 'LG TV Notify';
+        },
+        paletteLabel: 'LG TV notify',
+        inputLabels: 'notification message',
+        outputLabels: 'result'
+    });
+</script>
+
+<script type="text/html" data-template-name="lgtv-notify">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tv"><i class="fa fa-television"></i> TV</label>
+        <input type="text" id="node-input-tv">
+    </div>
+    <div class="form-row">
+        <label for="node-input-message"><i class="fa fa-comment"></i> Message</label>
+        <input type="text" id="node-input-message" placeholder="Use msg.payload or enter default">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="lgtv-notify">
+    <p>Send toast notifications to an LG webOS TV.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>The notification message to display on the TV.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">string</span></dt>
+        <dd>The original message.</dd>
+        <dt>toastId <span class="property-type">string</span></dt>
+        <dd>The ID of the created toast notification.</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node sends a toast notification to an LG webOS Smart TV.</p>
+    <p>The notification will appear in the top-right corner of the TV screen for approximately 5 seconds.</p>
+    <p><strong>First use:</strong> When you first deploy, check your TV for a pairing prompt and accept it.</p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://github.com/rcaldeira/node-red-contrib-lgtv-notify">GitHub</a> - the node's repository</li>
+    </ul>
+</script>
